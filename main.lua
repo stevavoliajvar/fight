@@ -1,4 +1,5 @@
 function love.load()
+        EMPTY_TILE = 1
         player = { x=200, 
                    y=200,
                    yspeed=4,
@@ -6,27 +7,39 @@ function love.load()
                    dim=20,
                    direction='none'} -- player table
         player.img = love.graphics.newImage('img/troll_m.png')
+
         room = {}
         room.tile = love.graphics.newImage('img/cobble_blood1.png')
+        room.tiles = {}
+        room.tileWidth = 32
+        room.tileHeight = 32
+        room.mapWidth = 16
+        room.mapHeight = 16
+        room.pixlesX = room.tileWidth * room.mapWidth
+        room.pixlesY = room.tileHeight * room.mapHeight
+
+        room.generate = function() 
+            for y = 0, room.mapHeight, 1 do
+                for x = 0, room.mapWidth, 1 do
+                    room.setTile(x, y, EMPTY_TILE)
+                end
+            end
+        end
+
+
+        room.draw = function()
+        end
+        
+        room.setTile = function(x, y, tile)
+            room.tiles[(y-1) * room.mapWidth + x] = tile
+        end
+        
+
         music = love.audio.newSource("music/shemsa.mp3", "stream")
         music:play()
+
         love.graphics.setBackgroundColor(1,1,1,1)
---        map = make_map()
 end
-
-
---[[function make_map()
-    map = {}
-    for y = 0, 640/32, 1 do
-        local tmp = {}
-        for x = 0, 480/32, 1 do
-            table.insert(tmp, love.math.random(0,2))
-        end
-        table.insert(map, tmp)
-    end
-    return map
-end
-]]--
 
 function love.update(dt)
     if love.keyboard.isDown('up') then
